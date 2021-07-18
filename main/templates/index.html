@@ -62,7 +62,7 @@
                 });
 
                 content.on('input', function () {
-                    const autoCommit = window.localStorage.getItem('autoCommit')
+                    const autoCommit = window.localStorage.getItem('autoCommit') || 'on'
                     if (autoCommit === 'on') {
                         contentForm.submit()
                     }
