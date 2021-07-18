@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title_suffix %}{{ channel.id }}{% endblock %}
+
+
+{% block body_content %}
+
+    <form method="post">
+        {% csrf_token %}
+        {% for item in contents %}
+            <div class="item" content_id="{{ item.id }}">
+            <span class="content form-control position-relative"
+                  style="height: 120px"><span
+                    class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-danger">
+                    <span class="delete" style="cursor: pointer">X</span>
+
+  </span>
+{{ item.content }}
+</span>
+                {{ item.create_at }}
+                <br>
+                <br>
+            </div>
+        {% endfor %}
+    </form>
+
+    <script>
+        $(document).ready(
+            () => {
+                $('.toast').toast();
+                $('.delete').on('click', function () {
+                    const content = $(this).parent().parent().parent();
+                    const content_id = content.attr('content_id');
+                    console.log('contnet_id', content_id)
+                    content.remove()
+                    $.ajax({
+                        url: `/${content_id}`,
+                        type: 'DELETE',
+                        dataType: 'json',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                        },
+                        success: (data) => {
+                            console.log('RESPONSE', data)
+                        }
+
+                    })
+                })
+
+                function copyToClipboard(text) {
+                    const elem = document.createElement('input');
+                    elem.value = text;
+                    document.body.appendChild(elem);
+                    elem.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(elem);
+                }
+
+                $('.content').on('click', function () {
+                    const text = $(this).contents().filter(function () {
+                        return this.nodeType === 3;
+                    }).text()
+                    copyToClipboard(text)
+                    alert('Successfully copied')
+                })
+
+
+            }
+        )
+    </script>
+
+    {#    <script>#}
+    {#        var contents = document.getElementsByClassName('content')#}
+    {#        Array.prototype.forEach(content, (content) => {#}
+    {#            content.select();#}
+    {#            document.execCommand("copy"); //copy to clipboard#}
+    {#            alert('Successfully copieddd')#}
+    {##}
+    {#        })#}
+    {#    </script>#}
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title_suffix %}New{% endblock %}
+{% block body_content %}
+    <form method="post" id="contentForm">
+        {% csrf_token %}
+
+
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Channel ID</label>
+            <input required type="text" class="form-control" id="channel_id"
+                   placeholder="" name="channel_id">
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Content</label>
+            <textarea required class="form-control" id="exampleFormControlTextarea1" name="content"
+                      placeholder="" rows="5"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary mb-3" id="submitContent">Submit</button>
+        </div>
+
+    </form>
+
+    <script>
+        $(document).ready(
+            $('#contentForm').on('submit', function (e) {
+                window.localStorage.setItem('CID', $('#channel_id').val())
+            })
+        )
+
+        $(document).ready(
+            () => {
+                const cid = window.localStorage.getItem('CID')
+                if (cid) {
+                    console.log(3223432)
+                    $('#channel_id').val(cid);
+                }
+            }
+        )
+    </script>
+{% endblock %}
