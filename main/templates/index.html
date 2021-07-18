@@ -29,6 +29,17 @@
     </form>
 
     <script>
+        commitForm = (e) => {
+            const contentForm = $('#contentForm');
+            const channel_id = $('#channel_id').val();
+            const content = $('#content').val();
+            if (channel_id === '' || content === '') {
+                return
+            }
+            contentForm.submit()
+        }
+
+
         $(document).ready(
             $('#contentForm').on('submit', function (e) {
                 window.localStorage.setItem('CID', $('#channel_id').val())
@@ -53,18 +64,20 @@
                     $('#autoCommitSwitch').attr('checked', false)
                 }
 
+                // 按下回车键，立即提交
                 contentForm.keypress(function (e) {
                     var code = (e.keyCode ? e.keyCode : e.which); // grabs keycode pressed
                     if (code === 13) {  // Code 13 is enter
                         e.preventDefault();
-                        contentForm.submit()
+                        commitForm();
                     }
                 });
 
+                // 监测到内容有变化，立即提交
                 content.on('input', function () {
                     const autoCommit = window.localStorage.getItem('autoCommit') || 'on'
                     if (autoCommit === 'on') {
-                        contentForm.submit()
+                        commitForm();
                     }
                 })
 
