@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title_suffix %}{{ channel.id }}{% endblock %}
+{% block title_suffix %} - {{ channel.id }}&nbsp;&nbsp;&nbsp;&nbsp;
+    <a id="clearAll"
+       class="btn btn-xs btn-outline-danger pull-right"
+       href="{{ channel.id }}/contents/clear"
+    >Clear All</a>{% endblock %}
+
 
 
 {% block body_content %}
+
 
     <form method="post">
         {% csrf_token %}

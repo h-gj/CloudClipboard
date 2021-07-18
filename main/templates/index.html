@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
-{% block title_suffix %}New{% endblock %}
+{#{% block title_suffix %}New{% endblock %}#}
 {% block body_content %}
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="autoCommitSwitch" checked>
+        <label class="form-check-label" for="flexSwitchCheckDefault">Auto commit</label>
+    </div>
+
+
     <form method="post" id="contentForm">
         {% csrf_token %}
 
@@ -16,9 +22,9 @@
                       placeholder="" rows="5"></textarea>
         </div>
 
-        <div class="mb-3">
-            <button type="submit" class="btn btn-primary mb-3" id="submitContent">Submit</button>
-        </div>
+        {#        <div class="mb-3">#}
+        {#            <button type="submit" class="btn btn-primary mb-3" id="submitContent">Submit</button>#}
+        {#        </div>#}
 
     </form>
 
@@ -31,13 +37,43 @@
 
         $(document).ready(
             () => {
-                $('#content').focus()
+                const content = $('#content');
+                const contentForm = $('#contentForm');
+
+                contentForm.val()
+
+                content.focus()
 
                 const cid = window.localStorage.getItem('CID')
+                const autoCommit = window.localStorage.getItem('autoCommit')
                 if (cid) {
-                    console.log(3223432)
                     $('#channel_id').val(cid);
                 }
+                if (autoCommit === 'off') {
+                    $('#autoCommitSwitch').attr('checked', false)
+                }
+
+                contentForm.keypress(function (e) {
+                    var code = (e.keyCode ? e.keyCode : e.which); // grabs keycode pressed
+                    if (code === 13) {  // Code 13 is enter
+                        e.preventDefault();
+                        contentForm.submit()
+                    }
+                });
+
+                content.on('input', function () {
+                    const autoCommit = window.localStorage.getItem('autoCommit')
+                    if (autoCommit === 'on') {
+                        contentForm.submit()
+                    }
+                })
+
+
+                $('#autoCommitSwitch').on('change', function () {
+                    const currentState = window.localStorage.getItem('autoCommit') || 'on';
+                    console.log('currentState', currentState);
+                    window.localStorage.setItem('autoCommit', currentState === 'on' ? 'off' : 'on');
+                })
             }
         )
     </script>

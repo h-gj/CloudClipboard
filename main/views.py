@@ -33,3 +33,8 @@ def retrieve_or_delete_content(request, pk):
     elif request.method == 'DELETE':
         ClipBoardContent.objects.get(pk=pk).delete()
         return JsonResponse({'code': 1000, 'message': 'success'})
+
+
+def clear_all_content(request, pk):
+    ClipBoardContent.objects.filter(channel_id=pk).delete()
+    return redirect(reverse('retrieve_or_delete_content', kwargs={'pk': pk}))
