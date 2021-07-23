@@ -1,4 +1,17 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+    <style>
+        .content-container {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 4; /* number of lines to show */
+            -webkit-box-orient: vertical;
+        }
+    </style>
+{% endblock %}
 
 {% block title_suffix %} - {{ channel.id }}&nbsp;&nbsp;&nbsp;&nbsp;
     <a id="clearAll"
@@ -21,7 +34,7 @@
                     <span class="delete" style="cursor: pointer">X</span>
 
   </span>
-{{ item.content }}
+<span class="content-container">{{ item.content }}</span>
 </span>
                 Created: {{ item.create_at  | date:"Y-m-d H:m:s" }}
                 <br>
