@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="{% static 'favicon.png' %}" sizes="32x32">
 
     <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"  crossorigin="anonymous">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous">
     <!-- JavaScript Bundle with Popper -->
     <script src="{% static 'js/bundle.min.js' %}" crossorigin="anonymous"></script>
     {% block header %}{% endblock %}
@@ -16,7 +16,11 @@
 <body>
 
 <div class="container">
-<a href="https://github.com/h-gj/CloudClipboard">Github Repo</a>
+    <a href="https://github.com/h-gj/CloudClipboard">
+        <img style="position: absolute; top: 0; right: 0; border: 0;"
+             src="http://images2015.cnblogs.com/blog/682661/201612/682661-20161210223653179-1870729401.png"
+             alt="Fork me on GitHub">
+    </a>
     <br>
     <div class="row">
         {#            <div class="col-11"></div>#}
