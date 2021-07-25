@@ -77,6 +77,11 @@
                 content.on('input', function () {
                     const autoCommit = window.localStorage.getItem('autoCommit') || 'on'
                     if (autoCommit === 'on') {
+                        const channel = $('#channel_id');
+                        const channel_id = channel.val();
+                        if (!channel_id) {
+                            channel.attr('placeholder', 'Please fill out this field.')
+                        }
                         commitForm();
                     }
                 })
