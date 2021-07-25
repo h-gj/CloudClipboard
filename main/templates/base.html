@@ -11,6 +11,16 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous">
     <!-- JavaScript Bundle with Popper -->
     <script src="{% static 'js/bundle.min.js' %}" crossorigin="anonymous"></script>
+    <style type="text/css">
+        @font-face {
+            font-family: helvetica;
+            src: url({% static 'font/helvetica-webfont.woff' %}) /* EOT file for IE */
+        }
+
+        * {
+            font-family: helvetica;
+        }
+    </style>
     {% block header %}{% endblock %}
 </head>
 <body>
