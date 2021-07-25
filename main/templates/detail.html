@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block header %}
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+
     <style>
         .content {
             overflow: hidden;
@@ -10,21 +12,42 @@
             -webkit-line-clamp: 6; /* number of lines to show */
             -webkit-box-orient: vertical;
         }
+
+        @media only screen
+        and (max-width: 768px) {
+            #qrcode {
+                display: none;
+            }
+        }
+
     </style>
 {% endblock %}
 
 {% block title_suffix %} - {{ channel.id }}&nbsp;&nbsp;&nbsp;&nbsp;
     <a id="clearAll"
-       class="btn btn-xs btn-outline-danger pull-right"
+       class="btn btn-xs btn-outline-danger"
        href="{{ channel.id }}/contents/clear"
-    >Clear All</a>{% endblock %}
-
+       style="float: right;">Clear All</a>{% endblock %}
 
 
 {% block body_content %}
-
-    <p class="alert alert-secondary" id="alert" style="padding: 5px 10px;font-size: 13px;">One click to COPY, double
+    <p class="alert alert-secondary" id="alert" style="padding: 8px 13px;font-size: 14px; margin-top: 18px">One click to
+        COPY, double
         click to DELETE.</p>
+    <div id="qrcode" class="img-thumbnail" style="position: fixed; top: 20px; right: 20px"></div>
+
+    <script>
+        const qrcode = new QRCode(document.getElementById('qrcode'), {
+            text: window.location.href,
+            width: 128,
+            height: 128,
+            colorDark: '#000',
+            colorLight: '#fff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+    </script>
+
     <form method="post">
         {% csrf_token %}
         {% for item in contents %}
