@@ -127,7 +127,7 @@
                     e.preventDefault();
                     const contentUrl = formContentUrl($(this))
                     copyToClipboard(contentUrl)
-
+                    $('#alert').attr('class', 'alert alert-warning').text(`Copied link at ${getCurrentFormattedTime()}`)  //perform single-click action
                 })
 
                 $('.cpCurlCodeBtn').on('click', function (e) {
@@ -135,6 +135,7 @@
                     const contentUrl = formContentUrl($(this))
                     const curlCode = 'curl ' + contentUrl
                     copyToClipboard(curlCode)
+                    $('#alert').attr('class', 'alert alert-success').text(`Copied curl code at ${getCurrentFormattedTime()}`)  //perform single-click action
                 })
 
 
