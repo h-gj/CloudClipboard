@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -15,7 +15,6 @@ def index(request):
         channel_id = request.POST.get('channel_id')
 
         channel, created = Channel.objects.get_or_create(id=channel_id)
-
         ClipBoardContent.objects.create(
             content=content,
             channel=channel,
@@ -38,3 +37,8 @@ def retrieve_or_delete_content(request, pk):
 def clear_all_content(request, pk):
     ClipBoardContent.objects.filter(channel_id=pk).delete()
     return redirect(reverse('retrieve_or_delete_content', kwargs={'pk': pk}))
+
+
+def retrieve_single_content(request, pk):
+    content = ClipBoardContent.objects.get(pk=pk).content
+    return HttpResponse(content)

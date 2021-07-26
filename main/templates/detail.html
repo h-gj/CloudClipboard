@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block header %}
-    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <script src="{% static 'js/qrcode.min.js' %}"></script>
 
     <style>
         .content {
@@ -52,11 +52,14 @@
         {% csrf_token %}
         {% for item in contents %}
             <div class="item" content_id="{{ item.id }}">
-            <span class="content form-control position-relative"
-                  style="height: 130px">
+            <textarea readonly class="content form-control position-relative"
+                      style="height: 130px;cursor: pointer;background-color: #ffffff;resize: none">
 {{ item.content }}
-</span>
-                Created: {{ item.create_at  | date:"Y-m-d H:m:s" }}
+</textarea>
+                <span class="w">Created: {{ item.create_at  | date:"m-d H:m:s" }}</span>
+                <button class="btn btn-outline-success btn-sm cpCurlCodeBtn" style="float: right">cp curl code
+                </button>&nbsp;&nbsp;
+                <button class="btn btn-outline-warning btn-sm cpLinkBtn" style="float: right">cp link</button>
                 <br>
                 <br>
             </div>
@@ -90,7 +93,6 @@
                 $('.delete').on('click', function () {
                     const content = $(this).parent().parent().parent();
                     const content_id = content.attr('content_id');
-                    console.log('contnet_id', content_id)
                     content.remove()
                     $.ajax({
                         url: `/${content_id}`,
@@ -100,7 +102,6 @@
                             xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
                         },
                         success: (data) => {
-                            console.log('RESPONSE', data)
                         }
 
                     })
@@ -115,6 +116,27 @@
                     document.body.removeChild(elem);
                 }
 
+                function formContentUrl(that) {
+                    const host = window.location.protocol + "//" + window.location.host;
+                    const content_id = that.parent().attr('content_id')
+                    return `${host}/contents/${content_id}`
+                }
+
+
+                $('.cpLinkBtn').on('click', function (e) {
+                    e.preventDefault();
+                    const contentUrl = formContentUrl($(this))
+                    copyToClipboard(contentUrl)
+
+                })
+
+                $('.cpCurlCodeBtn').on('click', function (e) {
+                    e.preventDefault();
+                    const contentUrl = formContentUrl($(this))
+                    const curlCode = 'curl ' + contentUrl
+                    copyToClipboard(curlCode)
+                })
+
 
                 var DELAY = 300, clicks = 0, timer = null;
 
@@ -127,7 +149,6 @@
                         const text = $(this).contents().filter(function () {
                             return this.nodeType === 3;
                         }).text()
-                        console.log('text to copy', text)
 
                         timer = setTimeout(function () {
 
@@ -142,7 +163,6 @@
 
                         const content = $(this).parent()
                         const content_id = content.attr('content_id')
-                        console.log('content -id', content_id)
 
                         $.ajax({
                             url: `/${content_id}`,
@@ -152,7 +172,6 @@
                                 xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
                             },
                             success: (data) => {
-                                console.log('RESPONSE', data)
                             }
 
                         })
@@ -160,7 +179,6 @@
                         $('#alert').attr('class', 'alert alert-danger').text(`Deleted at ${getCurrentFormattedTime()}`)
 
                         clearTimeout(timer);    //prevent single-click action
-                        console.log("Double Click");  //perform double-click action
                         clicks = 0;             //after action performed, reset counter
                     }
 
