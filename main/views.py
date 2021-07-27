@@ -41,4 +41,4 @@ def clear_all_content(request, pk):
 
 def retrieve_single_content(request, pk):
     content = ClipBoardContent.objects.get(pk=pk).content
-    return HttpResponse(content)
+    return HttpResponse(content + '\n')

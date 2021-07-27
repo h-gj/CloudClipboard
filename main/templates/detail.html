@@ -24,16 +24,28 @@
 {% endblock %}
 
 {% block title_suffix %} - {{ channel.id }}&nbsp;&nbsp;&nbsp;&nbsp;
+
     <a id="clearAll"
-       class="btn btn-xs btn-outline-danger"
+       class="btn btn-outline-success"
        href="{{ channel.id }}/contents/clear"
-       style="float: right;">Clear All</a>{% endblock %}
+       style="float: right;margin-left: 8px">Clear</a>
+    <a id="clearAll"
+       class="btn btn-outline-success"
+       href="/"
+       style="float: right;">Back</a>{% endblock %}
 
 
 {% block body_content %}
-    <p class="alert alert-secondary" id="alert" style="padding: 8px 13px;font-size: 14px; margin-top: 18px">One click to
-        COPY, double
-        click to DELETE.</p>
+    {% if contents %}
+        <p class="alert alert-success" id="alert" style="padding: 8px 13px;font-size: 14px; margin-top: 18px">One click
+            to
+            COPY, double
+            click to DELETE.</p>
+    {% else %}
+        <p class="alert alert-success" id="alert" style="padding: 8px 13px;font-size: 14px; margin-top: 18px">
+            No contents yet, create one!
+        </p>
+    {% endif %}
     <div id="qrcode" class="img-thumbnail" style="position: fixed; top: 20px; right: 20px"></div>
 
     <script>
@@ -53,13 +65,13 @@
         {% for item in contents %}
             <div class="item" content_id="{{ item.id }}">
             <textarea readonly class="content form-control position-relative"
-                      style="height: 130px;cursor: pointer;background-color: #ffffff;resize: none">
+                      style="height: 130px;cursor: pointer;background-color: #ffffff;resize: none;margin-bottom: 5px">
 {{ item.content }}
 </textarea>
-                <span class="w">Created: {{ item.create_at  | date:"m-d H:m:s" }}</span>
-                <button class="btn btn-outline-success btn-sm cpCurlCodeBtn" style="float: right">cp curl code
+                <span class="w" style="height: 31px;display: inline-block;line-height: 31px">Created at {{ item.create_at  | date:"m-d H:m:s" }}</span>
+                <button class="btn btn-outline-success btn-sm cpCurlCodeBtn" style="float: right;margin-left: 6px">cp curl
                 </button>&nbsp;&nbsp;
-                <button class="btn btn-outline-warning btn-sm cpLinkBtn" style="float: right">cp link</button>
+                <button class="btn btn-success btn-sm cpLinkBtn" style="float: right">cp link</button>
                 <br>
                 <br>
             </div>
@@ -108,7 +120,7 @@
                 })
 
                 function copyToClipboard(text) {
-                    const elem = document.createElement('input');
+                    const elem = document.createElement('textarea');
                     elem.value = text;
                     document.body.appendChild(elem);
                     elem.select();
@@ -127,7 +139,7 @@
                     e.preventDefault();
                     const contentUrl = formContentUrl($(this))
                     copyToClipboard(contentUrl)
-                    $('#alert').attr('class', 'alert alert-warning').text(`Copied link at ${getCurrentFormattedTime()}`)  //perform single-click action
+                    $('#alert').attr('class', 'alert alert-success').text(`Copied link at ${getCurrentFormattedTime()}`)  //perform single-click action
                 })
 
                 $('.cpCurlCodeBtn').on('click', function (e) {
@@ -177,7 +189,7 @@
 
                         })
                         content.remove()
-                        $('#alert').attr('class', 'alert alert-danger').text(`Deleted at ${getCurrentFormattedTime()}`)
+                        $('#alert').attr('class', 'alert alert-success').text(`Deleted at ${getCurrentFormattedTime()}`)
 
                         clearTimeout(timer);    //prevent single-click action
                         clicks = 0;             //after action performed, reset counter
