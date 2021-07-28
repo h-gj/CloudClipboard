@@ -29,10 +29,10 @@
        class="btn btn-outline-success"
        href="{{ channel.id }}/contents/clear"
        style="float: right;margin-left: 8px">Clear</a>
-{#    <a id="clearAll"#}
-{#       class="btn btn-outline-success"#}
-{#       href="/"#}
-{#       style="float: right;">Back</a>#}
+    {#    <a id="clearAll"#}
+    {#       class="btn btn-outline-success"#}
+    {#       href="/"#}
+    {#       style="float: right;">Back</a>#}
 {% endblock %}
 
 
@@ -40,8 +40,8 @@
     {% if contents %}
         <p class="alert alert-success" id="alert" style="padding: 8px 13px;font-size: 14px; margin-top: 18px">One click
             to
-            COPY, double
-            click to DELETE.</p>
+            <b><i>COPY</i></b>, double
+            click to <b><i>DELETE</i></b>.</p>
     {% else %}
         <p class="alert alert-success" id="alert" style="padding: 8px 13px;font-size: 14px; margin-top: 18px">
             No contents yet, create one!
@@ -69,8 +69,10 @@
                       style="height: 130px;cursor: pointer;background-color: #ffffff;resize: none;margin-bottom: 5px">
 {{ item.content }}
 </textarea>
-                <span class="w" style="height: 31px;display: inline-block;line-height: 31px">Created at {{ item.create_at  | date:"m-d H:m:s" }}</span>
-                <button class="btn btn-outline-success btn-sm cpCurlCodeBtn" style="float: right;margin-left: 6px">cp curl
+                <span class="w"
+                      style="height: 31px;display: inline-block;line-height: 31px">Created at {{ item.create_at  | date:"m-d H:m:s" }}</span>
+                <button class="btn btn-outline-success btn-sm cpCurlCodeBtn" style="float: right;margin-left: 6px">cp
+                    curl
                 </button>&nbsp;&nbsp;
                 <button class="btn btn-success btn-sm cpLinkBtn" style="float: right">cp link</button>
                 <br>
@@ -178,19 +180,39 @@
                         const content = $(this).parent()
                         const content_id = content.attr('content_id')
 
-                        $.ajax({
-                            url: `/${content_id}`,
-                            type: 'DELETE',
-                            dataType: 'json',
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                            },
-                            success: (data) => {
-                            }
-
-                        })
                         content.remove()
-                        $('#alert').attr('class', 'alert alert-success').text(`Deleted at ${getCurrentFormattedTime()}`)
+                        setTimeout(
+                            () => {
+                                $.ajax({
+                                    url: `/${content_id}`,
+                                    type: 'DELETE',
+                                    dataType: 'json',
+                                    beforeSend: function (xhr) {
+                                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                                    },
+                                    success: (data) => {
+                                    }
+
+                                })
+                            },
+                            3000
+                        )
+
+
+                        $('#alert').attr('class', 'alert alert-success').html(`Deleted at ${getCurrentFormattedTime()}  ` + '<a style="text-decoration: none;float: right" id="revertBtn" href="">revert(3s)<a/>')
+                        let countdown = 3;
+                        const interval = setInterval(
+                            () => {
+                                countdown -= 1;
+                                $('#revertBtn').text(`revert(${countdown})s`)
+                                if (countdown === 0) {
+                                    clearInterval(interval)
+                                    $('#revertBtn').text('')
+                                }
+                            },
+                            1000
+                        )
+
 
                         clearTimeout(timer);    //prevent single-click action
                         clicks = 0;             //after action performed, reset counter
