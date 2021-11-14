@@ -13,12 +13,12 @@ def index(request):
     else:
         content = request.POST.get('content')
         channel_id = request.POST.get('channel_id')
-
+        remote_addr = request.META.get('REMOTE_ADDR')
         channel, created = Channel.objects.get_or_create(id=channel_id)
         ClipBoardContent.objects.create(
             content=content,
             channel=channel,
-            publish_ip='127.0.0.1'
+            publish_ip=remote_addr,
         )
         return redirect(to=reverse('retrieve_or_delete_content', kwargs={'pk': channel_id}))
 
