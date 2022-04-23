@@ -1,4 +1,4 @@
-# A super easy-to-use cloud clipboard based on Python/Django.
+# An Easy-To-Use Cloud Clipboard Based on Django.
 ## Tech Stack
 - Python
 - Django
