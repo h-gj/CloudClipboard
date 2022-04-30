@@ -25,9 +25,11 @@ def index(request):
 
 def retrieve_or_delete_content(request, pk):
     if request.method == 'GET':
-        print('pk', pk)
-        channel = Channel.objects.get(pk=pk)
-        contents = channel.clipboardcontent_set.all().order_by('-create_at')
+        channel = Channel.objects.filter(pk=pk).first()
+        if channel:
+            contents = channel.clipboardcontent_set.all().order_by('-create_at')
+        else:
+            contents = []
         return render(request, 'detail.html', context={'channel': channel, 'contents': contents})
     elif request.method == 'DELETE':
         ClipBoardContent.objects.get(pk=pk).delete()
