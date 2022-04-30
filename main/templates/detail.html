@@ -44,7 +44,7 @@
             click to <b><i>DELETE</i></b>.</p>
     {% else %}
         <p class="alert alert-success" id="alert" style="padding: 8px 13px;font-size: 14px; margin-top: 18px">
-            No contents yet, create one!
+            No contents yet, create one! <a style="float: right; text-decoration: none" href="/">Go to Create</a>
         </p>
     {% endif %}
     <div id="qrcode" class="img-thumbnail" style="position: fixed; top: 20px; right: 20px"></div>
@@ -70,7 +70,7 @@
 {{ item.content }}
 </textarea>
                 <span class="w"
-                      style="height: 31px;display: inline-block;line-height: 31px">Created at {{ item.create_at  | date:"m-d H:m:s" }}</span>
+                      style="height: 31px;display: inline-block;line-height: 31px">Created at {{ item.create_at  | date:"m-d H:i:s" }}</span>
                 <button class="btn btn-outline-success btn-sm cpCurlCodeBtn" style="float: right;margin-left: 6px">cp
                     curl
                 </button>&nbsp;&nbsp;

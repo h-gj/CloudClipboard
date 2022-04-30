@@ -8,7 +8,7 @@
     </a>
     <div class="form-check form-switch">
         <input class="form-check-input" type="checkbox" id="autoCommitSwitch" checked>
-        <label class="form-check-label" for="flexSwitchCheckDefault">Auto commit</label>
+        <label class="form-check-label" for="flexSwitchCheckDefault">Auto Commit</label>
     </div>
 
 
@@ -18,18 +18,15 @@
 
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Channel ID</label>
+            <a id="jumpIntoBtn" style="float: right; text-decoration: none;" href="">Go to Channel</a>
             <input required type="text" class="form-control" id="channel_id"
                    placeholder="" name="channel_id">
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Content</label>
             <textarea required class="form-control" id="content" name="content"
-                      placeholder="" rows="5"></textarea>
+                      placeholder="Press enter to commit in case of auto commit is off." rows="5"></textarea>
         </div>
-
-        {#        <div class="mb-3">#}
-        {#            <button type="submit" class="btn btn-primary mb-3" id="submitContent">Submit</button>#}
-        {#        </div>#}
 
     </form>
 
@@ -44,10 +41,14 @@
             contentForm.submit()
         }
 
-
         $(document).ready(
             $('#contentForm').on('submit', function (e) {
                 window.localStorage.setItem('CID', $('#channel_id').val())
+            }),
+            $('#jumpIntoBtn').click(function (e) {
+                const channel_id = $('#channel_id').val();
+                e.target.href += channel_id
+                console.log(111, e, channel_id)
             })
         )
 
