@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{#{% block title_suffix %}New{% endblock %}#}
+
 {% block body_content %}
     <a href="https://github.com/h-gj/CloudClipboard">
         <img style="position: absolute; top: 0; right: 0; border: 0;"
@@ -14,8 +14,6 @@
 
     <form method="post" id="contentForm">
         {% csrf_token %}
-
-
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Channel ID</label>
             <a id="jumpIntoBtn" style="float: right; text-decoration: none;" href="">Go to Channel</a>
@@ -25,7 +23,7 @@
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Content</label>
             <textarea required class="form-control" id="content" name="content"
-                      placeholder="Press enter to commit in case of auto commit is off." rows="5"></textarea>
+                      placeholder="Press ENTER to commit in case of auto commit is off." rows="5"></textarea>
         </div>
 
     </form>
