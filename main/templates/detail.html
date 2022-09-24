@@ -25,20 +25,29 @@
 
 {% block title_suffix %} - {{ channel.id }}&nbsp;&nbsp;&nbsp;&nbsp;
 
+
     <a id="clearAll"
        class="btn btn-outline-success"
        href="{{ channel.id }}/contents/clear"
-       style="float: right;margin-left: 8px">Clear</a>
-    {#    <a id="clearAll"#}
-    {#       class="btn btn-outline-success"#}
-    {#       href="/"#}
-    {#       style="float: right;">Back</a>#}
+       title="Clear All"
+       style="float: right;margin-left: 8px">
+        🆑
+    </a>
+
+    <a id="goHome"
+       class="btn btn-outline-success"
+       href="/"
+       title="Go Home"
+       style="float: right;margin-left: 8px">
+        🏠
+    </a>
+
 {% endblock %}
 
 
 {% block body_content %}
     {% if contents %}
-        <p class="alert alert-success" id="alert" style="padding: 8px 13px;font-size: 14px; margin-top: 18px">One click
+        <p class="alert alert-success" id="alert" style="padding: 8px 13px;font-size: 14px; margin-top: 18px">One lick
             to
             <b><i>COPY</i></b>, double
             click to <b><i>DELETE</i></b>.</p>

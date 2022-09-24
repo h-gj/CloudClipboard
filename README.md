@@ -1,24 +1,24 @@
-# 一个基于Python/Django易于使用的云剪贴板
+# 一个基于Django易于使用的云剪贴板
 ### 技术栈
 - Python
 - Django
 - HTML/CSS/Javascript
 - Bootstrap
-- Jquery
+- JQuery
 
 ### 截图
 - 首页 [![WocqF1.png](https://z3.ax1x.com/2021/07/28/WocqF1.png)](https://imgtu.com/i/WocqF1)
 - 剪贴板页 [![WogNm4.png](https://z3.ax1x.com/2021/07/28/WogNm4.png)](https://imgtu.com/i/WogNm4)
 
 
-# A super easy-to-use cloud clipboard based on Python/Django.
-### TECH STACK
+# An easy-to-use cloud clipboard based on Django.
+### Tech Stack
 - Python
 - Django
 - HTML/CSS/Javascript
 - Bootstrap
-- Jquery
+- JQuery
 
 ### Screenshots
-- Homepage [![WocqF1.png](https://z3.ax1x.com/2021/07/28/WocqF1.png)](https://imgtu.com/i/WocqF1)
-- Your own channel page [![WogNm4.png](https://z3.ax1x.com/2021/07/28/WogNm4.png)](https://imgtu.com/i/WogNm4)
+- Home Page [![WocqF1.png](https://z3.ax1x.com/2021/07/28/WocqF1.png)](https://imgtu.com/i/WocqF1)
+- Channel Page [![WogNm4.png](https://z3.ax1x.com/2021/07/28/WogNm4.png)](https://imgtu.com/i/WogNm4)
