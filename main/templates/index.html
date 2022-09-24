@@ -31,6 +31,34 @@
     </form>
 
     <script>
+        goToChannel = (e) => {
+            if (e.code === 'Enter') {
+                const channel_id = $('#channel_id').val();
+                window.location.href += channel_id
+            }
+        }
+
+        let Debounce = function (fn, delay = 800, immediate = false) {
+            let timer = null // 闭包存储setTimeout状态
+            return function () {
+                let self = this // 事件源this
+                let args = arguments // 接收事件源的event
+                if (timer) clearTimeout(timer) // 存在就清除执行fn的定时器
+                if (immediate) { // 立即执行
+                    let callNow = !timer // 执行fn的状态
+                    timer = setTimeout(function () {
+                        timer = null
+                    }, delay)
+                    if (callNow) fn.apply(self, args)
+                } else { // 非立即执行
+                    timer = setTimeout(function () { // 或者使用箭头函数将this指向dom
+                        fn.apply(self, args)
+                    }, delay)
+                }
+            }
+        }
+
+
         commitForm = (e) => {
             const contentForm = $('#contentForm');
             const channel_id = $('#channel_id').val();
@@ -48,7 +76,6 @@
             $('#jumpIntoBtn').click(function (e) {
                 const channel_id = $('#channel_id').val();
                 e.target.href += channel_id
-                console.log(111, e, channel_id)
             })
         )
 
@@ -56,6 +83,7 @@
             () => {
                 const content = $('#content');
                 const contentForm = $('#contentForm');
+                const autoCommitSwitch = $('#autoCommitSwitch');
 
                 contentForm.val()
 
@@ -67,7 +95,7 @@
                     $('#channel_id').val(cid);
                 }
                 if (autoCommit === 'off') {
-                    $('#autoCommitSwitch').attr('checked', false)
+                    autoCommitSwitch.attr('checked', false)
                 }
 
                 // 按下回车键，立即提交
@@ -79,8 +107,7 @@
                     }
                 });
 
-                // 监测到内容有变化，立即提交
-                content.on('input', function () {
+                function checkAndCommitForm() {
                     const autoCommit = window.localStorage.getItem('autoCommit') || 'on'
                     if (autoCommit === 'on') {
                         const channel = $('#channel_id');
@@ -90,10 +117,12 @@
                         }
                         commitForm();
                     }
-                })
+                }
 
+                // 监测到内容有变化，则提交（带防抖）
+                document.getElementById('content').oninput = Debounce(checkAndCommitForm)
 
-                $('#autoCommitSwitch').on('change', function () {
+                autoCommitSwitch.on('change', function () {
                     const currentState = window.localStorage.getItem('autoCommit') || 'on';
                     console.log('currentState', currentState);
                     window.localStorage.setItem('autoCommit', currentState === 'on' ? 'off' : 'on');

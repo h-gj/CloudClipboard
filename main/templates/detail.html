@@ -160,27 +160,24 @@
                 $(".content").on("click", function (e) {
 
                     clicks++;  //count clicks
+                    const text = $(this).contents().filter(function () {
+                        return this.nodeType === 3;
+                    }).text()
 
-                    if (clicks === 1) {
-                        const text = $(this).contents().filter(function () {
-                            return this.nodeType === 3;
-                        }).text()
-
+                    if (clicks === 1) {  // 复制
                         timer = setTimeout(function () {
-
-
                             copyToClipboard(text)
                             $('#alert').attr('class', 'alert alert-success').text(`Copied at ${getCurrentFormattedTime()}`)  //perform single-click action
                             clicks = 0;             //after action performed, reset counter
 
                         }, DELAY);
 
-                    } else {
-
+                    } else {  // 粘贴
                         const content = $(this).parent()
                         const content_id = content.attr('content_id')
 
                         content.remove()
+                        copyToClipboard(text)
                         setTimeout(
                             () => {
                                 $.ajax({
@@ -228,13 +225,4 @@
         )
     </script>
 
-    {#    <script>#}
-    {#        var contents = document.getElementsByClassName('content')#}
-    {#        Array.prototype.forEach(content, (content) => {#}
-    {#            content.select();#}
-    {#            document.execCommand("copy"); //copy to clipboard#}
-    {#            alert('Successfully copieddd')#}
-    {##}
-    {#        })#}
-    {#    </script>#}
 {% endblock %}
