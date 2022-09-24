@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
-import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -80,9 +79,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'CloudClipboard',
-        'USER': os.environ.get('rds_user'),
-        'PASSWORD': os.environ.get('rds_password'),
-        'HOST': 'rm-2ze61h4qw8l5r6w06to.mysql.rds.aliyuncs.com',
+        'USER': os.environ.get('mysql_user'),
+        'PASSWORD': os.environ.get('mysql_password'),
+        'HOST': os.environ.get('mysql_host'),
     }
 }
 
@@ -130,4 +129,3 @@ STATICFILES_DIRS = (
 )
 
 
-django_heroku.settings(locals())
