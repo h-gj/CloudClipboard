@@ -1,8 +1,27 @@
 {% extends 'base.html' %}
 
+{% block header %}
+    <style>
+
+    @media only screen and (min-width: 720px) {
+        #commitBtn {
+            visibility: hidden;
+        }
+    }
+
+    @media only screen and (max-width: 720px) {
+        #forkMe {
+            visibility: hidden;
+        }
+    }
+
+    </style>
+
+{% endblock %}
+
 {% block body_content %}
     <a href="https://github.com/h-gj/CloudClipboard">
-        <img style="position: absolute; top: 0; right: 0; border: 0;"
+        <img id="forkMe" style="position: absolute; top: 0; right: 0; border: 0;"
              src="http://images2015.cnblogs.com/blog/682661/201612/682661-20161210223653179-1870729401.png"
              alt="Fork me on GitHub">
     </a>
@@ -18,23 +37,28 @@
             <label for="exampleFormControlInput1" class="form-label">Channel ID</label>
             <a id="jumpIntoBtn" style="float: right; text-decoration: none;" href="">Go to Channel</a>
             <input required type="text" class="form-control" id="channel_id"
-                   placeholder="" name="channel_id">
+                   placeholder="" name="channel_id" onkeydown="goToChannel">
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Content</label>
             <textarea required class="form-control" id="content" name="content"
-                      placeholder="Press ENTER to commit in case of auto commit is off." rows="5"></textarea>
+                      placeholder="Paste or write down your content." rows="5"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <button class="btn w-100 btn-outline-success" id="commitBtn"  name="commitBtn">Commit</button>
         </div>
 
     </form>
 
     <script>
-        goToChannel = (e) => {
+        //  首页channel输入框，监测到回车键即跳转到channel page
+        $('#channel_id').on('keydown', (e) => {
             if (e.code === 'Enter') {
                 const channel_id = $('#channel_id').val();
                 window.location.href += channel_id
             }
-        }
+        })
 
         let Debounce = function (fn, delay = 800, immediate = false) {
             let timer = null // 闭包存储setTimeout状态
@@ -56,7 +80,6 @@
             }
         }
 
-
         commitForm = (e) => {
             const contentForm = $('#contentForm');
             const channel_id = $('#channel_id').val();
@@ -68,23 +91,24 @@
         }
 
         $(document).ready(
-            $('#contentForm').on('submit', function (e) {
-                window.localStorage.setItem('CID', $('#channel_id').val())
-            }),
-            $('#jumpIntoBtn').click(function (e) {
-                const channel_id = $('#channel_id').val();
-                e.target.href += channel_id
-            })
-        )
-
-        $(document).ready(
             () => {
                 const content = $('#content');
                 const contentForm = $('#contentForm');
                 const autoCommitSwitch = $('#autoCommitSwitch');
 
-                contentForm.val()
+                // 提交表单时，localstorage存储CID
+                contentForm.on('submit', function (e) {
+                    window.localStorage.setItem('CID', $('#channel_id').val())
+                })
 
+                // 跳转channel页面
+                $('#jumpIntoBtn').click(function (e) {
+                    const channel_id = $('#channel_id').val();
+                    e.target.href += channel_id
+                })
+
+
+                contentForm.val()
                 content.focus()
 
                 const cid = window.localStorage.getItem('CID')
@@ -96,7 +120,16 @@
                     autoCommitSwitch.attr('checked', false)
                 }
 
-                // 按下回车键，立即提交
+                // 如果auto commit checkbox没勾选，则提示：请按回车键提交。
+                const autoCommitChecked = autoCommitSwitch.is(':checked')
+                if (!autoCommitChecked) {
+                    content.attr('placeholder', 'Enter to commit.')
+                }
+
+                // 提交按钮触发点击事件则提交表单，针对移动端
+                $('#commitBtn').click(() => commitForm())
+
+                // 监测content输入框回车键，按下立即提交
                 contentForm.keypress(function (e) {
                     var code = (e.keyCode ? e.keyCode : e.which); // grabs keycode pressed
                     if (code === 13) {  // Code 13 is enter
@@ -105,6 +138,7 @@
                     }
                 });
 
+                // 校验并提交表单
                 function checkAndCommitForm() {
                     const autoCommit = window.localStorage.getItem('autoCommit') || 'on'
                     if (autoCommit === 'on') {
@@ -120,9 +154,9 @@
                 // 监测到内容有变化，则提交（带防抖）
                 document.getElementById('content').oninput = Debounce(checkAndCommitForm)
 
+                // 监测auto commit checkout，有变化则设置localstorage
                 autoCommitSwitch.on('change', function () {
                     const currentState = window.localStorage.getItem('autoCommit') || 'on';
-                    console.log('currentState', currentState);
                     window.localStorage.setItem('autoCommit', currentState === 'on' ? 'off' : 'on');
                 })
             }

@@ -27,19 +27,19 @@
 
 
     <a id="clearAll"
-       class="btn btn-outline-success"
-       href="{{ channel.id }}/contents/clear"
+       class="btn-sm btn-success"
+       channelId="{{ channel.id }}"
        title="Clear All"
-       style="float: right;margin-left: 8px">
-        🆑
+       style="float: right;margin-left: 8px; text-decoration: none; cursor: pointer">
+    Clean
     </a>
 
     <a id="goHome"
-       class="btn btn-outline-success"
+       class="btn-sm btn-outline-success"
        href="/"
        title="Go Home"
-       style="float: right;margin-left: 8px">
-        🏠
+       style="float: right;margin-left: 8px; text-decoration: none; cursor: pointer">
+    Back
     </a>
 
 {% endblock %}
@@ -53,7 +53,8 @@
             click to <b><i>DELETE</i></b>.</p>
     {% else %}
         <p class="alert alert-success" id="alert" style="padding: 8px 13px;font-size: 14px; margin-top: 18px">
-            No contents yet, create one! <a style="float: right; text-decoration: none" href="/">Go to Create</a>
+            No contents yet, create one!
+        <a style="float: right; text-decoration: none" href="/">Go to Create</a>
         </p>
     {% endif %}
     <div id="qrcode" class="img-thumbnail" style="position: fixed; top: 20px; right: 20px"></div>
@@ -91,6 +92,16 @@
     </form>
 
     <script>
+        const clearAll = $("#clearAll")
+
+        $('#clearAll').click((e) => {
+            e.preventDefault()
+            const yes = window.confirm("Are you sure to clear all content?")
+            if (yes) {
+                window.location.href = `${clearAll.attr("channelId")}/contents/clear`
+            }
+        })
+
         Date.prototype.Format = function (fmt) {
             const o = {
                 "M+": this.getMonth() + 1, //月份
@@ -205,7 +216,7 @@
                         )
 
 
-                        $('#alert').attr('class', 'alert alert-success').html(`Deleted at ${getCurrentFormattedTime()}  ` + '<a style="text-decoration: none;float: right" id="revertBtn" href="">REVERT(3)<a/>')
+                        $('#alert').attr('class', 'alert alert-success').html(`Deleted(also COPIED) at ${getCurrentFormattedTime()}  ` + '<a style="text-decoration: none;float: right" id="revertBtn" href="">REVERT(3)<a/>')
                         let countdown = 3;
                         const interval = setInterval(
                             () => {
