@@ -1,7 +1,7 @@
 from urllib.parse import urlencode
 
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect, render_to_response
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.urls import reverse
