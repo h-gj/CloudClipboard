@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block header %}
+
+
     <style>
 
     @media only screen and (min-width: 720px) {
         #commitBtn {
-            visibility: hidden;
+            display: none;
         }
     }
 
@@ -36,22 +38,60 @@
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Channel ID</label>
             <a id="jumpIntoBtn" style="float: right; text-decoration: none;" href="">Go to Channel</a>
-            <input required type="text" class="form-control" id="channel_id"
-                   placeholder="" name="channel_id" onkeydown="goToChannel">
+            <input required type="text" class="form-control" id="channel_id" value="{{ request.GET.channel_id }}"
+                   placeholder="" name="channel_id">
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Content</label>
             <textarea required class="form-control" id="content" name="content"
-                      placeholder="Paste or write down your content." rows="5"></textarea>
+                      placeholder="Paste or write down your content." rows="5">{{ request.GET.content }}</textarea>
         </div>
+
+        <input style="display: none" value="1" id="shouldRedirect" name="should_redirect">
 
         <div class="mb-3">
             <button class="btn w-100 btn-outline-success" id="commitBtn"  name="commitBtn">Commit</button>
         </div>
 
+        <div class="mb-3">
+            <button class="btn w-100 btn-outline-success" id="shareBtn"  name="shareBtn">Share</button>
+        </div>
+
     </form>
 
+    {% if request.GET.content_url %}
+
+    <div style="display: flex; justify-content: space-between">
+        <span id="contentUrl">{{ request.GET.content_url }}</span>
+        <a style="text-decoration: none" class="" id="copyContentUrlBtn" href="#">Copy</a>
+    </div>
+    <div id="contentQr" class="img-thumbnail"></div>
+
+    {% endif %}
+
     <script>
+        const contentUrl = document.getElementById('contentUrl').innerText
+        console.log(11111, contentUrl)
+        const qrcode = new QRCode(document.getElementById('contentQr'), {
+            text: contentUrl,
+            width: 128,
+            height: 128,
+            colorDark: '#000',
+            colorLight: '#fff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+    </script>
+{#    <div id="contentQr"></div>#}
+{#    <>#}
+
+    <script>
+        const copyContentUrlBtn = $('#copyContentUrlBtn')
+        copyContentUrlBtn.click((e) => {
+            e.preventDefault()
+            copyToClipboard(contentUrl)
+        })
+
         //  首页channel输入框，监测到回车键即跳转到channel page
         $('#channel_id').on('keydown', (e) => {
             if (e.code === 'Enter') {
@@ -60,7 +100,7 @@
             }
         })
 
-        let Debounce = function (fn, delay = 800, immediate = false) {
+        let Debounce = function (fn, delay = 1200, immediate = false) {
             let timer = null // 闭包存储setTimeout状态
             return function () {
                 let self = this // 事件源this
@@ -80,6 +120,16 @@
             }
         }
 
+        geneRandCID = (length=2) => {
+            let result = '';
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const charactersLength = characters.length;
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
         commitForm = (e) => {
             const contentForm = $('#contentForm');
             const channel_id = $('#channel_id').val();
@@ -90,11 +140,25 @@
             contentForm.submit()
         }
 
+        fillOutChannelId = (channelId) => {
+            let cid = window.localStorage.getItem('CID')
+
+            // 没有cid，则生成一个随机的。
+            if (!cid) {
+                cid = geneRandCID()
+                localStorage.setItem('CID', cid)
+            }
+            channelId.val(cid);
+        }
+
+
         $(document).ready(
             () => {
                 const content = $('#content');
+                const channelId = $('#channel_id');
                 const contentForm = $('#contentForm');
                 const autoCommitSwitch = $('#autoCommitSwitch');
+                const jumpIntoBtn = $('#jumpIntoBtn');
 
                 // 提交表单时，localstorage存储CID
                 contentForm.on('submit', function (e) {
@@ -102,20 +166,17 @@
                 })
 
                 // 跳转channel页面
-                $('#jumpIntoBtn').click(function (e) {
+                jumpIntoBtn.on('click', function (e) {
                     const channel_id = $('#channel_id').val();
-                    e.target.href += channel_id
+                    e.target.href = `/${channel_id}`
                 })
 
+                content.focus() // content自动聚焦
 
-                contentForm.val()
-                content.focus()
+                fillOutChannelId(channelId) // 自动填充channel id
 
-                const cid = window.localStorage.getItem('CID')
+                // 从localstorage获取是否自动提交标识
                 const autoCommit = window.localStorage.getItem('autoCommit')
-                if (cid) {
-                    $('#channel_id').val(cid);
-                }
                 if (autoCommit === 'off') {
                     autoCommitSwitch.attr('checked', false)
                 }
@@ -131,7 +192,7 @@
 
                 // 监测content输入框回车键，按下立即提交
                 contentForm.keypress(function (e) {
-                    var code = (e.keyCode ? e.keyCode : e.which); // grabs keycode pressed
+                    const code = (e.keyCode ? e.keyCode : e.which); // grabs keycode pressed
                     if (code === 13) {  // Code 13 is enter
                         e.preventDefault();
                         commitForm();
@@ -159,7 +220,16 @@
                     const currentState = window.localStorage.getItem('autoCommit') || 'on';
                     window.localStorage.setItem('autoCommit', currentState === 'on' ? 'off' : 'on');
                 })
+
+                const shareBtn = $('#shareBtn')
+                shareBtn.click((e) => {
+                    e.preventDefault()
+                    $('#shouldRedirect').val(0)
+                    commitForm()
+                    $('#shouldRedirect').val(1)
+                })
             }
         )
     </script>
+
 {% endblock %}

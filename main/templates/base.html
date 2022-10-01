@@ -9,9 +9,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript">
+    function copyToClipboard(text) {
+        const elem = document.createElement('textarea');
+        elem.value = text;
+        document.body.appendChild(elem);
+        elem.select();
+        document.execCommand('copy');
+        document.body.removeChild(elem);
+    }
+
+    </script>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous">
     <!-- JavaScript Bundle with Popper -->
     <script src="{% static 'js/bundle.min.js' %}" crossorigin="anonymous"></script>
+    <script src="{% static 'js/qrcode.min.js' %}"></script>
     <style type="text/css">
         @font-face {
             font-family: helvetica;
@@ -42,7 +54,11 @@
     <br>
     <div class="row">
         <div class="col col-md-6 col-md-offset-4">
-            <h3>Cloud Clipboard{% block title_suffix %}{% endblock %}</h3>
+            <h3
+                    style="cursor: pointer"
+                    onclick="window.location.href='/'">
+                Cloud Clipboard{% block title_suffix %}{% endblock %}
+            </h3>
 
 
             {% block body_content %}{% endblock %}
