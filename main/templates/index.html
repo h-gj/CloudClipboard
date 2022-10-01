@@ -184,16 +184,16 @@
                 // 如果auto commit checkbox没勾选，则提示：请按回车键提交。
                 const autoCommitChecked = autoCommitSwitch.is(':checked')
                 if (!autoCommitChecked) {
-                    content.attr('placeholder', 'Enter to commit.')
+                    content.attr('placeholder', 'Press Shift+Enter to commit.')
                 }
 
                 // 提交按钮触发点击事件则提交表单，针对移动端
                 $('#commitBtn').click(() => commitForm())
 
-                // 监测content输入框回车键，按下立即提交
+                // 监测content输入框enter+shift键，同时按下则立即提交
                 contentForm.keypress(function (e) {
                     const code = (e.keyCode ? e.keyCode : e.which); // grabs keycode pressed
-                    if (code === 13) {  // Code 13 is enter
+                    if (code === 13 && e.shiftKey) {  // Code 13 is enter
                         e.preventDefault();
                         commitForm();
                     }

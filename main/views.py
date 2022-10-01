@@ -42,7 +42,7 @@ def retrieve_or_delete_content(request, pk):
     if request.method == 'GET':
         channel = Channel.objects.filter(pk=pk).first()
         if channel:
-            contents = channel.clipboardcontent_set.all().order_by('-create_at')
+            contents = channel.clipboardcontent_set.all().order_by('-create_at')[:10]
         else:
             contents = []
         return render(request, 'detail.html', context={'channel': channel, 'contents': contents})
