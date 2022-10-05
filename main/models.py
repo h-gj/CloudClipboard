@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+from django.urls import reverse
 
 
 class Channel(models.Model):
@@ -16,3 +17,8 @@ class ClipBoardContent(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     change_at = models.DateTimeField(auto_now=True)
     publish_ip = models.GenericIPAddressField()
+
+    @property
+    def content_url(self):
+        url = reverse('content', kwargs={'pk': self.id})
+        return url

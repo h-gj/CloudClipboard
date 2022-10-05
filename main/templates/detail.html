@@ -78,12 +78,36 @@
                       style="height: 130px;cursor: pointer;background-color: #ffffff;resize: none;margin-bottom: 5px;box-shadow: rgba(149, 157, 165, 0.5) 1px 3px 13px;">
 {{ item.content }}
 </textarea>
-                <span class="w"
-                      style="height: 31px;display: inline-block;line-height: 31px">Created at {{ item.create_at  | date:"m-d H:i:s" }}</span>
-                <button class="btn btn-outline-success btn-sm cpCurlCodeBtn" style="float: right;margin-left: 6px">cp
-                    curl
-                </button>&nbsp;&nbsp;
-                <button class="btn btn-success btn-sm cpLinkBtn" style="float: right">cp link</button>
+
+                <div style="display: flex; justify-content: space-between">
+
+
+                    <div class="contentMeta" style="display: flex">
+                        <span class="w"
+                              style="height: 31px;display: inline-block;line-height: 31px">Created at {{ item.create_at  | date:"m-d H:i:s" }}
+                        </span>
+                    </div>
+
+
+                    <div content_id="{{ item.id }}" style="display: flex; justify-content: flex-end">
+                        <button class="btn btn-outline-success btn-sm cpCurlCodeBtn">cp
+                            curl
+                        </button>&nbsp;&nbsp;
+
+                        <button class="btn btn-outline-success btn-sm cpLinkBtn">
+                            cp link
+                        </button>&nbsp;&nbsp;
+
+                        <button class="btn btn-success btn-sm shareBtn" contentUrl="{{ item.content_url }}">
+                            share
+                        </button>
+                    </div>
+
+
+                </div>
+
+                <div id="contentQr{{ forloop.counter0 }}" style="display: none; margin-top: 3px; border: none" class="contentQrZone img-thumbnail"></div>
+
                 <br>
                 <br>
             </div>
@@ -94,6 +118,52 @@
     <p style="text-align: center; font-size: 14px; color: #82b993">That'all I can show you. (most recent 10) (~_~)</p>
 
     <script>
+        // 生成二维码
+        $('.shareBtn').each(function (i, obj) {
+            const btnId = `contentQr${i}`
+            new QRCode(document.getElementById(btnId), {
+                text: window.location.origin + obj.getAttribute('contentUrl'),
+                width: 128,
+                height: 128,
+                colorDark: '#000',
+                colorLight: '#fff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        })
+
+        var showQrCodeOrNot = false
+        // 鼠标悬浮显示二维码，离开不显示
+        $('.shareBtn').on({
+            mouseenter: function (e) {
+                e.preventDefault()
+                setTimeout(() => {
+                    const qrCodeZone = e.target.parentElement.parentElement.nextElementSibling
+                qrCodeZone.style.display = 'flex'
+                qrCodeZone.style.justifyContent = 'flex-end'
+                }, 100)
+            },
+
+            mouseleave: function (e) {
+                e.preventDefault()
+                setTimeout(() => {
+                    const qrCodeZone = e.target.parentElement.parentElement.nextElementSibling
+                qrCodeZone.style.display = 'none'
+                }, 100)
+            },
+
+            click: function (e) {
+                e.preventDefault()
+                const qrCodeZone = e.target.parentElement.parentElement.nextElementSibling
+                if (showQrCodeOrNot) {
+                    qrCodeZone.style.display = 'flex'
+                    qrCodeZone.style.justifyContent = 'flex-end'
+                } else {
+                    qrCodeZone.style.display = 'none'
+                }
+                showQrCodeOrNot = !showQrCodeOrNot
+            }
+        })
+
         const clearAll = $("#clearAll")
 
         $('#clearAll').click((e) => {
