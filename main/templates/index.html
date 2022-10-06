@@ -88,6 +88,10 @@
         const copyContentUrlBtn = $('#copyContentUrlBtn')
         copyContentUrlBtn.click((e) => {
             e.preventDefault()
+            copyContentUrlBtn.text('Copied')
+            setTimeout(() => {
+                copyContentUrlBtn.text('Copy')
+            }, 1500)
             copyToClipboard(contentUrl)
         })
 
@@ -218,9 +222,23 @@
                 autoCommitSwitch.on('change', function () {
                     const currentState = window.localStorage.getItem('autoCommit') || 'on';
                     window.localStorage.setItem('autoCommit', currentState === 'on' ? 'off' : 'on');
+
+                    // 开启自动提交，则隐藏分享按钮；关闭自动提交，则显示分享按钮。
+                    if (currentState === 'on') {
+                        shareBtn.show()
+                    } else {
+                        shareBtn.hide()
+                    }
+
                 })
 
                 const shareBtn = $('#shareBtn')
+
+                // 开启自动提交，则隐藏分享按钮
+                if (autoCommit === 'on') {
+                    shareBtn.hide()
+                }
+
                 shareBtn.click((e) => {
                     e.preventDefault()
                     $('#shouldRedirect').val(0)
