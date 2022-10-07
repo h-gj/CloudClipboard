@@ -171,6 +171,12 @@
                     content.val('')
                 })
 
+                // CID变化立即同步到localStorage
+                channelId.on('change keyup paste', function (e) {
+                    localStorage.setItem('CID', channelId.val())
+                    console.log(e.target.value)
+                })
+
                 // 提交表单时，localstorage存储CID
                 contentForm.on('submit', function (e) {
                     window.localStorage.setItem('CID', $('#channel_id').val())

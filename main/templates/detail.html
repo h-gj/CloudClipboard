@@ -22,24 +22,28 @@
     </style>
 {% endblock %}
 
-{% block title_suffix %} - {{ channel.id }}&nbsp;&nbsp;&nbsp;&nbsp;
+{% block title_suffix %} - {{ channel.id|default:"unknown" }}&nbsp;&nbsp;&nbsp;&nbsp;
 
 
-    <a id="clearAll"
-       class="btn-sm btn-success"
-       channelId="{{ channel.id }}"
-       title="Clear All"
-       style="float: right;margin-left: 8px; text-decoration: none; cursor: pointer">
-    Clean
-    </a>
+    <div style="display: flex; align-items: flex-end">
 
-    <a id="goHome"
-       class="btn-sm btn-outline-success"
-       href="/"
-       title="Go Home"
-       style="float: right;margin-left: 8px; text-decoration: none; cursor: pointer">
-    Back
-    </a>
+
+        <a id="goHome"
+           class="btn-sm btn-outline-success"
+           href="/"
+           title="Go Home"
+           style="margin-left: 8px; text-decoration: none; cursor: pointer">
+        Back
+        </a>
+
+        <a id="clearAll"
+           class="btn-sm btn-success"
+           channelId="{{ channel.id }}"
+           title="Clear All"
+           style="margin-left: 8px; text-decoration: none; cursor: pointer">
+        Clean
+        </a>
+    </div>
 
 {% endblock %}
 
@@ -168,6 +172,7 @@
 
         $('#clearAll').click((e) => {
             e.preventDefault()
+            e.stopPropagation()
             const yes = window.confirm("Are you sure to clear all content?")
             if (yes) {
                 window.location.href = `${clearAll.attr("channelId")}/contents/clear`
