@@ -43,6 +43,9 @@
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Content</label>
+            <a id="clearContent" style="float: right; text-decoration: none;" href="">Clear</a>
+
+
             <textarea required class="form-control" id="content" name="content"
                       placeholder="Paste or write down your content." rows="5">{{ request.GET.content }}</textarea>
         </div>
@@ -81,8 +84,6 @@
         });
 
     </script>
-{#    <div id="contentQr"></div>#}
-{#    <>#}
 
     <script>
         const copyContentUrlBtn = $('#copyContentUrlBtn')
@@ -163,6 +164,13 @@
                 const autoCommitSwitch = $('#autoCommitSwitch');
                 const jumpIntoBtn = $('#jumpIntoBtn');
 
+                // 清除内容
+                const clearContent = $("#clearContent")
+                clearContent.on('click', (e) => {
+                    e.preventDefault();
+                    content.val('')
+                })
+
                 // 提交表单时，localstorage存储CID
                 contentForm.on('submit', function (e) {
                     window.localStorage.setItem('CID', $('#channel_id').val())
@@ -191,16 +199,22 @@
                 }
 
                 // 提交按钮触发点击事件则提交表单，针对移动端
-                $('#commitBtn').click(() => commitForm())
+                const commitBtn = $('#commitBtn')
+                commitBtn.click(() => {
+                    commitBtn.prop('disabled', true)
+                    commitForm()
+                })
 
-                // 监测content输入框enter+shift键，同时按下则立即提交
-                contentForm.keypress(function (e) {
+                // 监测content输入框enter+shift键，同时按下则立即提交：防抖
+                contentForm.keypress(Debounce(function (e) {
+                    shareBtn.prop('disabled', false)
+
                     const code = (e.keyCode ? e.keyCode : e.which); // grabs keycode pressed
                     if (code === 13 && e.shiftKey) {  // Code 13 is enter
                         e.preventDefault();
                         commitForm();
                     }
-                });
+                }, 600));
 
                 // 校验并提交表单
                 function checkAndCommitForm() {
@@ -241,9 +255,17 @@
 
                 shareBtn.click((e) => {
                     e.preventDefault()
-                    $('#shouldRedirect').val(0)
-                    commitForm()
-                    $('#shouldRedirect').val(1)
+                    const lastShareContent = localStorage.getItem('lastShareContent')
+                    // 内容跟上次分享的有变化才提交，防止重复提交
+                    if (lastShareContent !== content.val()) {
+                        $('#shouldRedirect').val(0)
+                        commitForm()
+                        $('#shouldRedirect').val(1)
+                        localStorage.setItem('lastShareContent', content.val())
+                    } else {
+                        shareBtn.prop('disabled', true)
+                    }
+
                 })
             }
         )
